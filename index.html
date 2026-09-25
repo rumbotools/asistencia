@@ -500,7 +500,7 @@ async function api(action, method = 'GET', body = null) {
 
 const leerDatos         = ()              => api('leer', 'GET');
 const actualizarMeta    = (id, meta)      => api('meta', 'PUT', { id, meta });
-const añadirAsistente   = (id, asistente) => api('añadir', 'POST', { id, asistente });
+const añadirAsistente   = (id, asistente) => api('anadir', 'POST', { id, asistente });
 const actualizarAsist   = (id, idx, cambios) => api('actualizar-asistente', 'PUT', { id, idx, cambios });
 const eliminarAsist     = (id, idx)       => api('eliminar-asistente', 'PUT', { id, idx });
 const nuevaReunionAPI   = (meta)          => api('nueva-reunion', 'POST', { meta });
