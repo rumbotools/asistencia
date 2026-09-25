@@ -513,8 +513,8 @@ async function api(action, method = 'GET', body = null) {
 const leerDatos         = ()              => api('leer', 'GET');
 const leerDatosPublico  = ()              => api('leer-publico', 'GET');
 const actualizarMeta    = (id, meta)      => api('meta', 'PUT', { id, meta });
-const añadirAsistente        = (id, asistente, sesion_id, totp_token) => api('anadir', 'POST', { id, asistente, sesion_id, totp_token });
-const añadirAsistenteManual = (id, asistente) => api('anadir-manual', 'POST', { id, asistente });
+const anadirAsistente        = (id, asistente, sesion_id, totp_token) => api('anadir', 'POST', { id, asistente, sesion_id, totp_token });
+const anadirAsistenteManual = (id, asistente) => api('anadir-manual', 'POST', { id, asistente });
 const actualizarAsist   = (id, idx, cambios) => api('actualizar-asistente', 'PUT', { id, idx, cambios });
 const eliminarAsist     = (id, idx)       => api('eliminar-asistente', 'PUT', { id, idx });
 const nuevaReunionAPI   = (meta)          => api('nueva-reunion', 'POST', { meta });
@@ -868,7 +868,7 @@ async function guardarManual(){
   const agrupacion=document.getElementById('man-agrupacion').value.trim();
   if(!nombre||!apellidos||!centro||!agrupacion){document.getElementById('man-error').style.display='block';return;}
   try {
-    await añadirAsistenteManual(reunionId,{nombre,apellidos,centro,agrupacion,manual:true,firma:null,firmando:false});
+    await anadirAsistenteManual(reunionId,{nombre,apellidos,centro,agrupacion,manual:true,firma:null,firmando:false});
     cerrarModalManual(); sincronizarLista('fase1'); mostrarToast(`${nombre} ${apellidos} añadido ✓`);
   } catch(e){mostrarToast('Error al añadir');}
 }
@@ -1008,7 +1008,7 @@ async function registrarPresencia(){
   try {
     const data=await leerDatos();
     if(data.meta?.asistenciaCerrada){mostrarVistaF1('cerrado');return;}
-    await añadirAsistente(data.id,{nombre,apellidos,centro,agrupacion,manual:false,firma:null,firmando:false}, sesionURL, tokenURL);
+    await anadirAsistente(data.id,{nombre,apellidos,centro,agrupacion,manual:false,firma:null,firmando:false}, sesionURL, tokenURL);
     document.getElementById('f1-ok-nombre').textContent=`${nombre} ${apellidos}`;
     document.getElementById('f1-ok-centro').textContent=centro;
     document.getElementById('f1-ok-agrup').textContent=agrupacion;
