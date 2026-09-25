@@ -261,8 +261,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
             <div class="card-title">QR de firma</div>
             <div class="qr-box" onclick="abrirModalQR('firma')" title="Clic para ampliar"><div id="qr-firma"></div></div>
             <div class="qr-hint" style="margin-top:.75rem"><span class="live-dot"></span>QR firmas</div>
-            <div style="margin-top:1rem;display:flex;gap:8px;justify-content:center">
+            <div style="margin-top:1rem;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
               <button class="btn btn-success" onclick="irFase('acta')">Ver acta →</button>
+              <button class="btn" onclick="abrirModalManual()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Añadir asistente manualmente
+              </button>
             </div>
           </div>
         </div>
@@ -298,7 +302,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
             <div style="margin-top:.75rem">
               <button class="btn btn-ghost-red btn-block" onclick="nuevaReunion()">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
-                Nueva reunión
+                Terminar reunión
               </button>
             </div>
           </div>
@@ -863,7 +867,7 @@ async function cargarActa(){
 }
 
 async function nuevaReunion(){
-  if(!confirm('¿Iniciar una nueva reunión? Se borrará toda la información actual.')) return;
+  if(!confirm('¿Terminar la reunión? Se borrará toda la información actual.')) return;
   try {
     const data=await nuevaReunionAPI({fase:'config'});
     reunionId=data.id;
