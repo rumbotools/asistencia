@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Asistencia — Orientadores</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -20,7 +21,6 @@
 body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray-900);min-height:100vh}
 .screen{display:none}.screen.active{display:block}
 
-/* LOGIN */
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .login-box{background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:2rem;width:320px;text-align:center}
 .login-logo{width:48px;height:48px;background:var(--blue-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
@@ -28,56 +28,40 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
 .login-sub{font-size:13px;color:var(--gray-400);margin-bottom:1.5rem}
 .login-error{font-size:13px;color:var(--red);margin-top:.5rem;display:none}
 
-/* TOPBAR */
 .topbar{background:var(--blue);color:white;padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .topbar-title{font-size:15px;font-weight:500}
 .topbar-badge{font-size:11px;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:20px;letter-spacing:.04em;text-transform:uppercase}
 
-/* LAYOUT COORDINADORA */
 .coord-wrap{padding:1.5rem;max-width:1100px;margin:0 auto}
 .coord-grid{display:grid;grid-template-columns:400px 1fr;gap:1.5rem}
 @media(max-width:800px){.coord-grid{grid-template-columns:1fr}}
 
-/* CARDS */
 .card{background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:1.25rem}
 .card+.card{margin-top:1rem}
 .card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);margin-bottom:1rem}
 
-/* FIELDS */
 .field{margin-bottom:.85rem}
 .field label{display:block;font-size:13px;font-weight:500;color:var(--gray-600);margin-bottom:4px}
 .field input,.field select{width:100%;padding:8px 11px;border:1px solid var(--gray-200);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--gray-900);background:white;outline:none;transition:border-color .15s}
 .field input:focus,.field select:focus{border-color:var(--blue-mid)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--gray-200);background:white;color:var(--gray-900);transition:all .15s;white-space:nowrap}
-.btn:hover{background:var(--gray-100)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary{background:var(--blue);color:white;border-color:var(--blue)}
-.btn-primary:hover{background:#1045a0}
-.btn-success{background:var(--green);color:white;border-color:var(--green)}
-.btn-success:hover{background:#14532d}
-.btn-danger{background:var(--red);color:white;border-color:var(--red)}
-.btn-danger:hover{background:#7f1d1d}
-.btn-amber{background:#b45309;color:white;border-color:#b45309}
-.btn-amber:hover{background:#92400e}
+.btn:hover{background:var(--gray-100)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--blue);color:white;border-color:var(--blue)}.btn-primary:hover{background:#1045a0}
+.btn-success{background:var(--green);color:white;border-color:var(--green)}.btn-success:hover{background:#14532d}
+.btn-danger{background:var(--red);color:white;border-color:var(--red)}.btn-danger:hover{background:#7f1d1d}
+.btn-amber{background:#b45309;color:white;border-color:#b45309}.btn-amber:hover{background:#92400e}
 .btn-block{width:100%;justify-content:center}
 .btn-lg{padding:11px 22px;font-size:15px}
 .btn-sm{padding:5px 12px;font-size:12px}
-.btn-ghost-red{color:var(--red);border-color:transparent;background:transparent}
-.btn-ghost-red:hover{background:var(--red-light)}
-.btn-ghost{border-color:transparent;background:transparent}
-.btn-ghost:hover{background:var(--gray-100)}
+.btn-ghost-red{color:var(--red);border-color:transparent;background:transparent}.btn-ghost-red:hover{background:var(--red-light)}
 
-/* FASE TABS */
 .fase-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;background:var(--gray-100);padding:4px;border-radius:10px}
 .fase-tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--gray-600);transition:all .15s}
 .fase-tab.active{background:white;color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.fase-tab.done{color:var(--green)}
 .fase-tab:disabled{opacity:.4;cursor:not-allowed}
 
-/* QR */
 .qr-container{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center}
 .qr-box{background:white;border:2px solid var(--gray-200);border-radius:12px;padding:20px;cursor:zoom-in;transition:transform .15s;display:inline-block}
 .qr-box:hover{transform:scale(1.02)}
@@ -88,22 +72,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
 .live-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px;animation:pulse 1.5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* MODAL QR AMPLIADO */
 .qr-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:1rem}
 .qr-modal.open{display:flex}
 .qr-modal-box{background:white;border-radius:16px;padding:28px;text-align:center}
 .qr-modal-box canvas,.qr-modal-box img{display:block}
 .qr-modal-close{color:white;font-size:14px;cursor:pointer;background:rgba(255,255,255,.15);border:none;padding:8px 20px;border-radius:8px;font-family:'DM Sans',sans-serif}
-.qr-modal-timer{color:white;font-size:14px}
-.qr-modal-timer span{font-weight:600}
+.qr-modal-timer{color:white;font-size:14px}.qr-modal-timer span{font-weight:600}
 
-/* STATS */
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1rem}
 .stat-box{background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:.75rem 1rem}
 .stat-num{font-size:22px;font-weight:600;color:var(--blue)}
 .stat-label{font-size:11px;color:var(--gray-400);margin-top:1px}
 
-/* LISTA ASISTENTES */
 .att-item{display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--gray-100)}
 .att-item:last-child{border-bottom:none}
 .avatar{width:32px;height:32px;border-radius:50%;background:var(--blue-light);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
@@ -119,20 +99,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
 .empty-state{padding:2rem;text-align:center;color:var(--gray-400);font-size:13px}
 .actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gray-100)}
 
-/* MODAL AÑADIR MANUAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
 .modal-box{background:white;border-radius:var(--radius);padding:1.5rem;width:min(420px,95vw);max-height:90vh;overflow-y:auto}
 .modal-title{font-size:16px;font-weight:600;margin-bottom:1rem}
 
-/* TOAST */
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--gray-900);color:white;padding:10px 20px;border-radius:8px;font-size:13px;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
-
-/* SYNC STATUS */
 .sync-status{font-size:11px;color:var(--gray-400);text-align:center;margin-top:.5rem}
 
-/* ── MÓVIL ── */
 .mobile-header{background:var(--blue);color:white;padding:1.25rem 1.25rem 1rem}
 .mobile-header .m-tipo{font-size:16px;font-weight:600;margin-bottom:2px}
 .mobile-header .m-meta{font-size:13px;opacity:.8}
@@ -143,7 +118,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
 .firma-tools{display:flex;align-items:center;gap:8px;margin-top:8px}
 .firma-hint{font-size:12px;color:var(--gray-400)}
 
-/* AUTOCOMPLETE */
 .autocomplete-wrap{position:relative}
 .autocomplete-list{position:absolute;top:100%;left:0;right:0;background:white;border:1px solid var(--gray-200);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:50;max-height:200px;overflow-y:auto;margin-top:2px}
 .autocomplete-item{padding:10px 12px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--gray-100)}
@@ -159,18 +133,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
 
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.req{color:#dc2626}
-.mt1{margin-top:1rem}
+.req{color:#dc2626}.mt1{margin-top:1rem}
 .divider{height:1px;background:var(--gray-100);margin:1rem 0}
-#m-error{color:#dc2626;font-size:13px;margin-top:8px;display:none}
-
-/* UNDO BAR */
 .undo-bar{background:var(--amber-light);border:1px solid #fcd34d;border-radius:8px;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;font-size:13px;color:var(--amber)}
+
+/* CONSENTIMIENTO */
+.consent-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:1rem;font-size:12px;color:#1e40af;line-height:1.6}
+.consent-check{display:flex;align-items:flex-start;gap:8px;margin-top:8px;font-size:13px;color:var(--gray-900)}
+.consent-check input{margin-top:2px;flex-shrink:0}
 </style>
 </head>
 <body>
 
-<!-- ══ LOGIN ══ -->
+<!-- LOGIN -->
 <div id="screen-login" class="screen active">
   <div class="login-wrap">
     <div class="login-box">
@@ -179,16 +154,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
       </div>
       <div class="login-title">Panel de coordinadora</div>
       <div class="login-sub">Introduce la contraseña para acceder</div>
-      <div class="field">
-        <input id="login-pass" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')comprobarPass()">
-      </div>
+      <div class="field"><input id="login-pass" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')comprobarPass()"></div>
       <button class="btn btn-primary btn-block" onclick="comprobarPass()">Entrar</button>
       <div class="login-error" id="login-error">Contraseña incorrecta</div>
     </div>
   </div>
 </div>
 
-<!-- ══ COORDINADORA ══ -->
+<!-- COORDINADORA -->
 <div id="screen-coord" class="screen">
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:10px">
@@ -200,7 +173,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
       <button class="btn btn-sm" onclick="cerrarSesion()" style="color:white;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.1);font-size:12px">Salir</button>
     </div>
   </div>
-
   <div class="coord-wrap">
     <div class="fase-tabs">
       <button class="fase-tab active" id="tab-config" onclick="irFase('config')">⚙️ Configurar</button>
@@ -209,7 +181,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
       <button class="fase-tab" id="tab-acta" onclick="irFase('acta')" disabled>📄 Acta</button>
     </div>
 
-    <!-- PANEL CONFIG -->
     <div id="panel-config">
       <div class="coord-grid">
         <div>
@@ -228,17 +199,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
           </div>
         </div>
         <div>
-          <div class="card" style="color:var(--gray-400);font-size:13px;line-height:1.7">
+          <div class="card" style="color:var(--gray-400);font-size:13px;line-height:1.8">
             <div class="card-title">Cómo funciona</div>
-            <p><strong style="color:var(--gray-900)">1. Asistencia</strong> — Se proyecta un QR que cambia cada 5 segundos. Los orientadores lo escanean para registrar su presencia.</p>
-            <p style="margin-top:.75rem"><strong style="color:var(--gray-900)">2. Firma</strong> — Cuando todos han llegado, se cierra la asistencia y aparece un nuevo QR para que cada orientador firme desde su móvil.</p>
-            <p style="margin-top:.75rem"><strong style="color:var(--gray-900)">3. Acta</strong> — Se genera el PDF con la lista completa y las firmas.</p>
+            <p><strong style="color:var(--gray-900)">1. Asistencia</strong> — QR rotatorio cada 5 s. Los orientadores escanean para registrar presencia.</p>
+            <p style="margin-top:.75rem"><strong style="color:var(--gray-900)">2. Firma</strong> — QR fijo para que cada orientador firme desde su móvil. Solo pueden firmar quienes registraron presencia.</p>
+            <p style="margin-top:.75rem"><strong style="color:var(--gray-900)">3. Acta</strong> — PDF con lista completa y firmas.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- PANEL FASE 1 -->
     <div id="panel-fase1" style="display:none">
       <div id="undo-bar-f1" class="undo-bar" style="display:none">
         <span id="undo-msg-f1"></span>
@@ -246,11 +216,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
       </div>
       <div class="coord-grid">
         <div>
-          <div class="card qr-container" id="qr-asistencia-card">
+          <div class="card qr-container">
             <div class="card-title">QR de asistencia</div>
-            <div class="qr-box" onclick="abrirModalQR('asistencia')" title="Clic para ampliar">
-              <div id="qr-asistencia"></div>
-            </div>
+            <div class="qr-box" onclick="abrirModalQR('asistencia')" title="Clic para ampliar"><div id="qr-asistencia"></div></div>
             <div class="qr-timer">Rota en <span id="timer-count">5</span>s</div>
             <div class="qr-hint" style="margin-top:.75rem"><span class="live-dot"></span>QR activo y rotando. Los orientadores escanean con su móvil.</div>
             <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
@@ -280,7 +248,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
       </div>
     </div>
 
-    <!-- PANEL FASE 2 -->
     <div id="panel-fase2" style="display:none">
       <div id="undo-bar-f2" class="undo-bar" style="display:none">
         <span id="undo-msg-f2"></span>
@@ -288,16 +255,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
       </div>
       <div class="coord-grid">
         <div>
-          <div class="card qr-container" id="qr-firma-card">
+          <div class="card qr-container">
             <div class="card-title">QR de firma</div>
-            <div class="qr-box" onclick="abrirModalQR('firma')" title="Clic para ampliar">
-              <div id="qr-firma"></div>
-            </div>
-            <div class="qr-hint" style="margin-top:.75rem"><span class="live-dot"></span>Muéstralo en pantalla o envíalo por el grupo de WhatsApp.</div>
+            <div class="qr-box" onclick="abrirModalQR('firma')" title="Clic para ampliar"><div id="qr-firma"></div></div>
+            <div class="qr-hint" style="margin-top:.75rem"><span class="live-dot"></span>Muéstralo en pantalla o envíalo por WhatsApp.</div>
             <div style="margin-top:1rem;display:flex;gap:8px;justify-content:center">
-              <button class="btn btn-success" onclick="irFase('acta')">
-                Ver acta →
-              </button>
+              <button class="btn btn-success" onclick="irFase('acta')">Ver acta →</button>
             </div>
           </div>
         </div>
@@ -316,12 +279,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
       </div>
     </div>
 
-    <!-- PANEL ACTA -->
     <div id="panel-acta" style="display:none">
       <div class="coord-grid">
         <div>
           <div class="card">
-            <div class="card-title">Resumen de la reunión</div>
+            <div class="card-title">Resumen</div>
             <div class="stats-row">
               <div class="stat-box"><div class="stat-num" id="n-acta-total">0</div><div class="stat-label">Asistentes</div></div>
               <div class="stat-box"><div class="stat-num" id="n-acta-firmados">0</div><div class="stat-label">Con firma</div></div>
@@ -350,16 +312,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
   </div>
 </div>
 
-<!-- ══ MODAL QR AMPLIADO ══ -->
+<!-- MODAL QR -->
 <div class="qr-modal" id="qr-modal" onclick="cerrarModalQR()">
-  <div class="qr-modal-box" onclick="event.stopPropagation()">
-    <div id="qr-modal-inner"></div>
-  </div>
+  <div class="qr-modal-box" onclick="event.stopPropagation()"><div id="qr-modal-inner"></div></div>
   <div class="qr-modal-timer" id="qr-modal-timer" style="display:none">Rota en <span id="modal-timer-count">5</span>s</div>
   <button class="qr-modal-close" onclick="cerrarModalQR()">✕ Cerrar</button>
 </div>
 
-<!-- ══ MODAL AÑADIR MANUAL ══ -->
+<!-- MODAL AÑADIR MANUAL -->
 <div class="modal-overlay" id="modal-manual">
   <div class="modal-box">
     <div class="modal-title">Añadir asistente manualmente</div>
@@ -375,7 +335,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
   </div>
 </div>
 
-<!-- ══ MÓVIL — FASE 1 ══ -->
+<!-- MÓVIL FASE 1 -->
 <div id="screen-f1" class="screen">
   <div id="f1-form-view">
     <div class="mobile-header">
@@ -384,6 +344,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
     </div>
     <div class="mobile-body">
       <div class="card">
+        <div class="consent-box">
+          <strong>Información sobre tus datos</strong><br>
+          Los datos que facilitas (nombre, apellidos, centro y agrupación) se recogen únicamente para acreditar tu asistencia a esta reunión. Serán tratados por la coordinación territorial y eliminados una vez generada el acta. No se ceden a terceros.
+          <label class="consent-check"><input type="checkbox" id="f1-consent"> He leído y acepto el tratamiento de mis datos para el registro de asistencia.</label>
+        </div>
         <div class="card-title">Registra tu asistencia</div>
         <div class="field"><label>Nombre <span class="req">*</span></label><input id="f1-nombre" type="text" autocomplete="given-name" placeholder="Tu nombre"></div>
         <div class="field"><label>Apellidos <span class="req">*</span></label><input id="f1-apellidos" type="text" autocomplete="family-name" placeholder="Tus apellidos"></div>
@@ -393,7 +358,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
           Asistencia
         </button>
-        <p id="f1-error">Por favor, completa todos los campos.</p>
+        <p id="f1-error" style="color:#dc2626;font-size:13px;margin-top:8px;display:none">Completa todos los campos y acepta el consentimiento.</p>
       </div>
     </div>
   </div>
@@ -414,7 +379,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
         <svg width="36" height="36" fill="none" stroke="#991b1b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       </div>
       <div class="ok-name">Registro cerrado</div>
-      <div class="ok-note">La coordinadora ha cerrado el registro de asistencia.<br>Si no has podido registrarte, comunícaselo.</div>
+      <div class="ok-note">La coordinadora ha cerrado el registro de asistencia.</div>
     </div>
   </div>
   <div id="f1-invalido-view" style="display:none">
@@ -423,7 +388,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
         <svg width="36" height="36" fill="none" stroke="#991b1b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       </div>
       <div class="ok-name">QR caducado</div>
-      <div class="ok-note">Este código QR ya no es válido.<br>Escanea el QR actual proyectado en la sala.</div>
+      <div class="ok-note">Este código ya no es válido.<br>Escanea el QR actual proyectado en la sala.</div>
     </div>
   </div>
   <div id="f1-usado-view" style="display:none">
@@ -432,12 +397,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
         <svg width="36" height="36" fill="none" stroke="#92400e" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       </div>
       <div class="ok-name">Acceso único</div>
-      <div class="ok-note">Este enlace ya fue usado en este dispositivo.<br>Si no firmaste tú, habla con la coordinadora.</div>
+      <div class="ok-note">Este enlace ya fue usado en este dispositivo.</div>
     </div>
   </div>
 </div>
 
-<!-- ══ MÓVIL — FASE 2 ══ -->
+<!-- MÓVIL FASE 2 -->
 <div id="screen-f2" class="screen">
   <div id="f2-form-view">
     <div class="mobile-header">
@@ -446,6 +411,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
     </div>
     <div class="mobile-body">
       <div class="card">
+        <div class="consent-box">
+          <strong>Información sobre tu firma</strong><br>
+          Tu firma manuscrita digitalizada se recoge para acreditar tu asistencia. Se almacena cifrada y será eliminada una vez generada el acta oficial.
+        </div>
         <div class="card-title">Busca tu nombre para firmar</div>
         <div class="field">
           <label>Escribe tu nombre <span class="req">*</span></label>
@@ -495,50 +464,67 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
         <svg width="36" height="36" fill="none" stroke="#991b1b" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       </div>
       <div class="ok-name">Enlace no válido</div>
-      <div class="ok-note">Este enlace no corresponde a ninguna reunión activa.<br>Escanea el QR actual.</div>
+      <div class="ok-note">Este enlace no corresponde a ninguna reunión activa.</div>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 // ══════════════════════════════════════════
-// CONFIG
+// CONFIG — solo la publishable key aquí
 // ══════════════════════════════════════════
-const BIN_ID  = '6a209328da38895dfe831399';
-const API_KEY = '$2a$10$v3HfW5Eegx2XwTRDVLk1WOXleWg2.9GQ1f3rUiRHfULRKQOoic2RS';
-const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-const HDRS    = {'Content-Type':'application/json','X-Access-Key':API_KEY,'X-Bin-Versioning':'false'};
-const PUBLIC  = 'https://santiagocapo.github.io/asistencia/';
-const PASS_HASH = '41bb82c9f3f5685fae8c63a083ae7c3f5d29300fcbd7c86361a17360a8993bff'; // sha256("admin")
-const TOTP_STEP = 15; // segundos de validez de cada código
-const QR_ROTATE = 5;  // segundos entre rotaciones visuales
+const EDGE_URL  = 'https://ltauwdffqsttfjkwqvbo.supabase.co/functions/v1/orientadores-api';
+const PUB_KEY   = 'sb_publishable_QgZUvBcB8qWGTmVQsEleCw_IOL-DPp-';
+const PUBLIC    = 'https://santiagocapo.github.io/asistencia/';
+const PASS_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // sha256("admin")
+const TOTP_STEP = 15;
+const QR_ROTATE = 5;
+
+// ══════════════════════════════════════════
+// API — todas las llamadas van a la Edge Function
+// ══════════════════════════════════════════
+async function api(action, method = 'GET', body = null) {
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${PUB_KEY}`,
+      'x-action': action,
+    },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(EDGE_URL, opts);
+  if (!r.ok) throw new Error(`Error ${r.status}`);
+  return r.json();
+}
+
+const leerDatos         = ()              => api('leer', 'GET');
+const actualizarMeta    = (id, meta)      => api('meta', 'PUT', { id, meta });
+const añadirAsistente   = (id, asistente) => api('añadir', 'POST', { id, asistente });
+const actualizarAsist   = (id, idx, cambios) => api('actualizar-asistente', 'PUT', { id, idx, cambios });
+const eliminarAsist     = (id, idx)       => api('eliminar-asistente', 'PUT', { id, idx });
+const nuevaReunionAPI   = (meta)          => api('nueva-reunion', 'POST', { meta });
 
 // ══════════════════════════════════════════
 // ARRANQUE
 // ══════════════════════════════════════════
 const params    = new URLSearchParams(window.location.search);
-const modo      = params.get('m'); // 'f1' o 'f2'
+const modo      = params.get('m');
 const sesionURL = params.get('s');
-const tokenURL  = params.get('t'); // código TOTP en la URL del QR rotatorio
+const tokenURL  = params.get('t');
 
 document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
 
 if (modo === 'f1') {
-  activarScreen('screen-f1');
-  initMovilF1();
+  activarScreen('screen-f1'); initMovilF1();
 } else if (modo === 'f2') {
-  activarScreen('screen-f2');
-  initMovilF2();
+  activarScreen('screen-f2'); initMovilF2();
 } else {
-  // Recuperar sesión coordinadora (ligada a la fecha de hoy)
   if (sessionStorage.getItem('coord_auth') === hoy()) {
-    activarScreen('screen-coord');
-    arrancarCoord();
+    activarScreen('screen-coord'); arrancarCoord();
   }
-  // Si no, se queda en login
 }
 
 // ══════════════════════════════════════════
@@ -557,269 +543,186 @@ function mostrarToast(msg) {
 }
 
 // ══════════════════════════════════════════
-// JSONBIN
+// TOTP
 // ══════════════════════════════════════════
-async function leerBin() {
-  const r = await fetch(BIN_URL+'/latest',{headers:{'X-Access-Key':API_KEY}});
-  if(!r.ok) throw new Error('Error leyendo');
-  return (await r.json()).record;
-}
-async function escribirBin(record) {
-  const r = await fetch(BIN_URL,{method:'PUT',headers:HDRS,body:JSON.stringify(record)});
-  if(!r.ok) throw new Error('Error escribiendo');
-  return r.json();
-}
-
-// ══════════════════════════════════════════
-// TOTP — QR ROTATORIO
-// ══════════════════════════════════════════
-// Genera un código de 6 chars basado en sesionID + ventana de tiempo
-// Sin librerías externas, usando SubtleCrypto
 async function generarTOTP(sesionId, ventana) {
   const key = sesionId + ':' + ventana;
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(key));
   return Array.from(new Uint8Array(buf)).slice(0,3).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-
-function ventanaActual() {
-  return Math.floor(Date.now() / 1000 / TOTP_STEP);
-}
-
+function ventanaActual() { return Math.floor(Date.now() / 1000 / TOTP_STEP); }
 async function validarToken(sesionId, token) {
   const v = ventanaActual();
-  // Aceptar ventana actual y la anterior (margen de 1 ventana = TOTP_STEP segundos extra)
-  const t1 = await generarTOTP(sesionId, v);
-  const t2 = await generarTOTP(sesionId, v - 1);
-  return token === t1 || token === t2;
+  return token === await generarTOTP(sesionId, v) || token === await generarTOTP(sesionId, v-1);
 }
 
 // ══════════════════════════════════════════
 // LOGIN
 // ══════════════════════════════════════════
 async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 async function comprobarPass() {
   const val = document.getElementById('login-pass').value;
-  const hash = await sha256(val);
-  if (hash === PASS_HASH) {
+  if (await sha256(val) === PASS_HASH) {
     sessionStorage.setItem('coord_auth', hoy());
-    activarScreen('screen-coord');
-    arrancarCoord();
+    activarScreen('screen-coord'); arrancarCoord();
   } else {
-    document.getElementById('login-error').style.display = 'block';
-    document.getElementById('login-pass').value = '';
+    document.getElementById('login-error').style.display='block';
+    document.getElementById('login-pass').value='';
   }
 }
 function cerrarSesion() {
   sessionStorage.removeItem('coord_auth');
   activarScreen('screen-login');
-  document.getElementById('login-pass').value = '';
+  document.getElementById('login-pass').value='';
 }
 
 // ══════════════════════════════════════════
-// COORDINADORA — ARRANQUE
+// COORDINADORA
 // ══════════════════════════════════════════
+let reunionId    = null;
+let sesionActual = null;
 let syncInterval = null;
 let qrInterval   = null;
-let timerInterval = null;
+let timerInterval= null;
 let modalAbierto = null;
-let undoStackF1 = null;
-let undoStackF2 = null;
+let undoStackF1  = null;
+let undoStackF2  = null;
 
 async function arrancarCoord() {
   try {
-    const data = await leerBin();
+    const data = await leerDatos();
+    reunionId = data.id;
     const fase = data.meta?.fase || 'config';
-    if (fase === 'config') irFase('config');
-    else if (fase === 'f1') { restaurarConfigUI(data.meta); irFase('fase1'); }
-    else if (fase === 'f2') { restaurarConfigUI(data.meta); irFase('fase2'); }
-    else if (fase === 'acta') { restaurarConfigUI(data.meta); irFase('acta'); }
-  } catch(e) { mostrarToast('Error al conectar'); }
+    if (data.meta?.lugar) document.getElementById('lugar').value = data.meta.lugar;
+    if (data.meta?.fecha) document.getElementById('fecha').value = data.meta.fecha;
+    if (data.meta?.hora)  document.getElementById('hora').value  = data.meta.hora;
+    if (data.meta?.coordinadora) document.getElementById('coordinadora').value = data.meta.coordinadora;
+    if (fase !== 'config') {
+      ['tab-fase1','tab-fase2','tab-acta'].forEach(id=>document.getElementById(id).disabled=false);
+      irFase(fase === 'f1' ? 'fase1' : fase === 'f2' ? 'fase2' : 'acta');
+    }
+  } catch(e) { mostrarToast('Error al conectar con Supabase'); }
 }
 
-function restaurarConfigUI(meta) {
-  if(!meta) return;
-  if(meta.lugar) document.getElementById('lugar').value = meta.lugar;
-  if(meta.fecha) document.getElementById('fecha').value = meta.fecha;
-  if(meta.hora)  document.getElementById('hora').value  = meta.hora;
-  if(meta.coordinadora) document.getElementById('coordinadora').value = meta.coordinadora;
-}
-
-// ══════════════════════════════════════════
-// COORDINADORA — FASES
-// ══════════════════════════════════════════
 function irFase(fase) {
   ['config','fase1','fase2','acta'].forEach(f=>{
     document.getElementById('panel-'+f).style.display = f===fase?'block':'none';
   });
-  ['config','fase1','fase2','acta'].forEach((f,i)=>{
-    const tab = document.getElementById('tab-'+(f==='config'?'config':f));
-    if(tab) tab.classList.toggle('active', f===fase);
+  document.querySelectorAll('.fase-tab').forEach((t,i)=>{
+    t.classList.toggle('active', ['config','fase1','fase2','acta'][i]===fase);
   });
-  if(fase==='fase1') iniciarQRRotatorio();
-  else pararQRRotatorio();
-  if(fase==='fase2') iniciarQRFirma();
-  if(fase==='acta')  cargarActa();
-  if(fase==='fase1'||fase==='fase2') {
-    clearInterval(syncInterval);
-    syncInterval = setInterval(()=>sincronizarLista(fase), 5000);
-    sincronizarLista(fase);
-  } else {
-    clearInterval(syncInterval);
-  }
+  clearInterval(syncInterval);
+  pararQRRotatorio();
+  if (fase==='fase1') { iniciarQRRotatorio(); syncInterval=setInterval(()=>sincronizarLista('fase1'),5000); sincronizarLista('fase1'); }
+  if (fase==='fase2') { iniciarQRFirma();     syncInterval=setInterval(()=>sincronizarLista('fase2'),5000); sincronizarLista('fase2'); }
+  if (fase==='acta')  cargarActa();
 }
 
-// ══════════════════════════════════════════
-// COORDINADORA — INICIAR REUNIÓN
-// ══════════════════════════════════════════
 async function iniciarReunion() {
-  const lugar = document.getElementById('lugar').value || '—';
+  const lugar = document.getElementById('lugar').value||'—';
   const fecha = document.getElementById('fecha').value;
   const hora  = document.getElementById('hora').value;
-  const coord = document.getElementById('coordinadora').value || '';
-  const sesion = Math.random().toString(36).slice(2,10);
+  const coord = document.getElementById('coordinadora').value||'';
+  const sesion   = Math.random().toString(36).slice(2,10);
   const sesionF2 = Math.random().toString(36).slice(2,10);
-
+  const meta = { tipo:'Reunión de coordinación territorial de orientadores', lugar, fecha, hora, coordinadora:coord, sesion, sesionF2, fase:'f1', asistenciaCerrada:false };
   mostrarToast('Iniciando reunión...');
   try {
-    await escribirBin({
-      asistentes: [],
-      meta: { tipo:'Reunión de coordinación territorial de orientadores', lugar, fecha, hora, coordinadora:coord, sesion, sesionF2, fase:'f1', asistenciaCerrada:false }
-    });
-    // Habilitar tabs
-    ['tab-fase1','tab-fase2','tab-acta'].forEach(id=>{
-      document.getElementById(id).disabled = false;
-    });
+    const data = await nuevaReunionAPI(meta);
+    reunionId = data.id;
+    ['tab-fase1','tab-fase2','tab-acta'].forEach(id=>document.getElementById(id).disabled=false);
     irFase('fase1');
     mostrarToast('Reunión iniciada ✓');
   } catch(e) { mostrarToast('Error al iniciar'); }
 }
 
-// ══════════════════════════════════════════
-// QR ROTATORIO — FASE 1
-// ══════════════════════════════════════════
-let sesionActual = null;
-let qrInstF1 = null;
-let qrModalInst = null;
-
+// ── QR ROTATORIO ─────────────────────────
 async function iniciarQRRotatorio() {
   try {
-    const data = await leerBin();
+    const data = await leerDatos();
     sesionActual = data.meta?.sesion;
     if(!sesionActual) return;
     await rotarQR();
     let segs = QR_ROTATE;
     document.getElementById('timer-count').textContent = segs;
-    clearInterval(qrInterval);
-    clearInterval(timerInterval);
-    qrInterval = setInterval(async()=>{ await rotarQR(); segs=QR_ROTATE; }, QR_ROTATE*1000);
-    timerInterval = setInterval(()=>{
+    qrInterval   = setInterval(async()=>{ await rotarQR(); segs=QR_ROTATE; }, QR_ROTATE*1000);
+    timerInterval= setInterval(()=>{
       segs--;
       document.getElementById('timer-count').textContent = segs;
-      if(modalAbierto==='asistencia') document.getElementById('modal-timer-count').textContent = segs;
-    }, 1000);
-  } catch(e) {}
+      if(modalAbierto==='asistencia') document.getElementById('modal-timer-count').textContent=segs;
+    },1000);
+  } catch(e){}
 }
+function pararQRRotatorio() { clearInterval(qrInterval); clearInterval(timerInterval); }
 
 async function rotarQR() {
   if(!sesionActual) return;
   const token = await generarTOTP(sesionActual, ventanaActual());
-  const url = `${PUBLIC}?m=f1&s=${sesionActual}&t=${token}`;
-
-  const contenedor = document.getElementById('qr-asistencia');
-  contenedor.innerHTML = '';
-  new QRCode(contenedor, {text:url, width:200, height:200, colorDark:'#1a56a0', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
-
-  if(modalAbierto === 'asistencia') {
-    const mi = document.getElementById('qr-modal-inner');
-    mi.innerHTML = '';
-    new QRCode(mi, {text:url, width:300, height:300, colorDark:'#1a56a0', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
+  const url   = `${PUBLIC}?m=f1&s=${sesionActual}&t=${token}`;
+  const c = document.getElementById('qr-asistencia');
+  c.innerHTML='';
+  new QRCode(c,{text:url,width:200,height:200,colorDark:'#1a56a0',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  if(modalAbierto==='asistencia'){
+    const mi=document.getElementById('qr-modal-inner'); mi.innerHTML='';
+    new QRCode(mi,{text:url,width:300,height:300,colorDark:'#1a56a0',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
   }
 }
 
-function pararQRRotatorio() {
-  clearInterval(qrInterval);
-  clearInterval(timerInterval);
+async function iniciarQRFirma() {
+  try {
+    const data = await leerDatos();
+    const sf2  = data.meta?.sesionF2;
+    if(!sf2) return;
+    const url = `${PUBLIC}?m=f2&s=${sf2}`;
+    const c = document.getElementById('qr-firma'); c.innerHTML='';
+    new QRCode(c,{text:url,width:200,height:200,colorDark:'#166534',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+  } catch(e){}
 }
 
-function iniciarQRFirma() {
-  leerBin().then(data=>{
-    const sesF2 = data.meta?.sesionF2;
-    if(!sesF2) return;
-    const url = `${PUBLIC}?m=f2&s=${sesF2}`;
-    const c = document.getElementById('qr-firma');
-    c.innerHTML = '';
-    new QRCode(c, {text:url, width:200, height:200, colorDark:'#166534', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
+function abrirModalQR(tipo) {
+  modalAbierto=tipo;
+  document.getElementById('qr-modal').classList.add('open');
+  const mi=document.getElementById('qr-modal-inner'); mi.innerHTML='';
+  document.getElementById('qr-modal-timer').style.display = tipo==='asistencia'?'block':'none';
+  leerDatos().then(async data=>{
+    if(tipo==='asistencia'){
+      const s=data.meta?.sesion; if(!s)return;
+      const token=await generarTOTP(s,ventanaActual());
+      const url=`${PUBLIC}?m=f1&s=${s}&t=${token}`;
+      new QRCode(mi,{text:url,width:300,height:300,colorDark:'#1a56a0',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    } else {
+      const sf2=data.meta?.sesionF2; if(!sf2)return;
+      new QRCode(mi,{text:`${PUBLIC}?m=f2&s=${sf2}`,width:300,height:300,colorDark:'#166534',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    }
   });
 }
+function cerrarModalQR(){ document.getElementById('qr-modal').classList.remove('open'); modalAbierto=null; }
 
-// ══════════════════════════════════════════
-// MODAL QR AMPLIADO
-// ══════════════════════════════════════════
-function abrirModalQR(tipo) {
-  modalAbierto = tipo;
-  const modal = document.getElementById('qr-modal');
-  modal.classList.add('open');
-  const mi = document.getElementById('qr-modal-inner');
-  mi.innerHTML = '';
-  const timer = document.getElementById('qr-modal-timer');
-
-  if(tipo === 'asistencia') {
-    timer.style.display = 'block';
-    leerBin().then(async data=>{
-      const s = data.meta?.sesion;
-      if(!s) return;
-      const token = await generarTOTP(s, ventanaActual());
-      const url = `${PUBLIC}?m=f1&s=${s}&t=${token}`;
-      new QRCode(mi, {text:url, width:300, height:300, colorDark:'#1a56a0', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
-    });
-  } else {
-    timer.style.display = 'none';
-    leerBin().then(data=>{
-      const sf2 = data.meta?.sesionF2;
-      if(!sf2) return;
-      const url = `${PUBLIC}?m=f2&s=${sf2}`;
-      new QRCode(mi, {text:url, width:300, height:300, colorDark:'#166534', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
-    });
-  }
-}
-function cerrarModalQR() {
-  document.getElementById('qr-modal').classList.remove('open');
-  modalAbierto = null;
-}
-
-// ══════════════════════════════════════════
-// COORDINADORA — LISTA F1
-// ══════════════════════════════════════════
+// ── LISTAS ───────────────────────────────
 async function sincronizarLista(fase) {
   try {
-    const data = await leerBin();
-    const asis = data.asistentes || [];
-    if(fase==='fase1') renderListaF1(asis);
-    else if(fase==='fase2') renderListaF2(asis);
-    const ahora = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    const syncEl = document.getElementById(fase==='fase1'?'sync-f1':'sync-f2');
-    if(syncEl) syncEl.textContent = `Actualizado: ${ahora}`;
-  } catch(e) {}
+    const data = await leerDatos();
+    reunionId = data.id;
+    if(fase==='fase1') renderListaF1(data.asistentes||[]);
+    else renderListaF2(data.asistentes||[]);
+    const ahora=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById(fase==='fase1'?'sync-f1':'sync-f2').textContent=`Actualizado: ${ahora}`;
+  } catch(e){}
 }
 
 function renderListaF1(asis) {
-  const manuales = asis.filter(a=>a.manual).length;
-  const centros  = new Set(asis.map(a=>a.centro)).size;
   document.getElementById('n-presentes').textContent  = asis.length;
-  document.getElementById('n-centros-f1').textContent = centros;
-  document.getElementById('n-manuales').textContent   = manuales;
-  const c = document.getElementById('lista-f1');
-  if(!asis.length){ c.innerHTML='<div class="empty-state">Esperando asistentes...</div>'; return; }
-  c.innerHTML = asis.map((a,i)=>`
+  document.getElementById('n-centros-f1').textContent = new Set(asis.map(a=>a.centro)).size;
+  document.getElementById('n-manuales').textContent   = asis.filter(a=>a.manual).length;
+  const c=document.getElementById('lista-f1');
+  if(!asis.length){c.innerHTML='<div class="empty-state">Esperando asistentes...</div>';return;}
+  c.innerHTML=asis.map((a,i)=>`
     <div class="att-item">
       <div class="avatar">${((a.nombre[0]||'')+(a.apellidos[0]||'')).toUpperCase()}</div>
-      <div>
-        <div class="att-name">${a.nombre} ${a.apellidos}</div>
-        <div class="att-sub">${a.centro} · ${a.agrupacion}</div>
-      </div>
+      <div><div class="att-name">${a.nombre} ${a.apellidos}</div><div class="att-sub">${a.centro} · ${a.agrupacion}</div></div>
       <div class="att-right">
         ${a.manual?'<span class="badge badge-amber">Manual</span>':'<span class="badge badge-green">QR</span>'}
         <button class="btn btn-sm btn-ghost-red" onclick="eliminarAsistente(${i},'f1')">
@@ -830,24 +733,20 @@ function renderListaF1(asis) {
 }
 
 function renderListaF2(asis) {
-  const firmados  = asis.filter(a=>a.firma).length;
-  const pendientes = asis.length - firmados;
-  document.getElementById('n-firmados').textContent  = firmados;
-  document.getElementById('n-pendientes').textContent= pendientes;
-  document.getElementById('n-total-f2').textContent  = asis.length;
-  const c = document.getElementById('lista-f2');
-  if(!asis.length){ c.innerHTML='<div class="empty-state">Sin asistentes.</div>'; return; }
-  c.innerHTML = asis.map((a,i)=>`
+  const firmados=asis.filter(a=>a.firma).length;
+  document.getElementById('n-firmados').textContent  =firmados;
+  document.getElementById('n-pendientes').textContent=asis.length-firmados;
+  document.getElementById('n-total-f2').textContent  =asis.length;
+  const c=document.getElementById('lista-f2');
+  if(!asis.length){c.innerHTML='<div class="empty-state">Sin asistentes.</div>';return;}
+  c.innerHTML=asis.map((a,i)=>`
     <div class="att-item">
       <div class="avatar">${((a.nombre[0]||'')+(a.apellidos[0]||'')).toUpperCase()}</div>
-      <div>
-        <div class="att-name">${a.nombre} ${a.apellidos}</div>
-        <div class="att-sub">${a.centro}</div>
-      </div>
+      <div><div class="att-name">${a.nombre} ${a.apellidos}</div><div class="att-sub">${a.centro}</div></div>
       <div class="att-right">
         ${a.firma
-          ? `<img src="${a.firma}" class="firma-thumb" alt="firma"><span class="badge badge-green">Firmado</span>`
-          : `<span class="badge badge-gray">${a.firmando?'En proceso':'Pendiente'}</span>`}
+          ?`<img src="${a.firma}" class="firma-thumb" alt="firma"><span class="badge badge-green">Firmado</span>`
+          :`<span class="badge badge-gray">${a.firmando?'En proceso':'Pendiente'}</span>`}
         <button class="btn btn-sm btn-ghost-red" onclick="eliminarAsistente(${i},'f2')">
           <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
         </button>
@@ -855,189 +754,158 @@ function renderListaF2(asis) {
     </div>`).join('');
 }
 
-// ══════════════════════════════════════════
-// COORDINADORA — ACCIONES
-// ══════════════════════════════════════════
+// ── ACCIONES COORDINADORA ─────────────────
 async function cerrarAsistencia() {
-  if(!confirm('¿Cerrar el registro de asistencia? Los orientadores ya no podrán registrarse con el QR.')) return;
+  if(!confirm('¿Cerrar el registro de asistencia?')) return;
   try {
-    const data = await leerBin();
-    undoStackF1 = JSON.parse(JSON.stringify(data));
-    data.meta.asistenciaCerrada = true;
-    data.meta.fase = 'f2';
-    await escribirBin(data);
-    document.getElementById('tab-fase2').disabled = false;
-    irFase('fase2');
-    mostrarToast('Asistencia cerrada. QR de firma activo.');
-  } catch(e) { mostrarToast('Error'); }
+    const data=await leerDatos();
+    undoStackF1=JSON.parse(JSON.stringify(data));
+    await actualizarMeta(reunionId,{...data.meta,asistenciaCerrada:true,fase:'f2'});
+    ['tab-fase2','tab-acta'].forEach(id=>document.getElementById(id).disabled=false);
+    irFase('fase2'); mostrarToast('Asistencia cerrada. QR de firma activo.');
+  } catch(e){mostrarToast('Error');}
 }
 
-async function eliminarAsistente(idx, fase) {
+async function eliminarAsistente(idx,fase) {
   if(!confirm('¿Eliminar este registro?')) return;
   try {
-    const data = await leerBin();
-    if(fase==='f1') undoStackF1 = JSON.parse(JSON.stringify(data));
-    else undoStackF2 = JSON.parse(JSON.stringify(data));
-    const eliminado = data.asistentes.splice(idx,1)[0];
-    await escribirBin(data);
-    const bar = document.getElementById(`undo-bar-${fase}`);
-    document.getElementById(`undo-msg-${fase}`).textContent = `Eliminado: ${eliminado.nombre} ${eliminado.apellidos}`;
-    bar.style.display = 'flex';
-    setTimeout(()=>{ bar.style.display='none'; if(fase==='f1')undoStackF1=null; else undoStackF2=null; }, 8000);
+    const data=await leerDatos();
+    if(fase==='f1') undoStackF1=JSON.parse(JSON.stringify(data));
+    else undoStackF2=JSON.parse(JSON.stringify(data));
+    const eliminado=data.asistentes[idx];
+    await eliminarAsist(reunionId,idx);
+    const bar=document.getElementById(`undo-bar-${fase}`);
+    document.getElementById(`undo-msg-${fase}`).textContent=`Eliminado: ${eliminado.nombre} ${eliminado.apellidos}`;
+    bar.style.display='flex';
+    setTimeout(()=>{bar.style.display='none';if(fase==='f1')undoStackF1=null;else undoStackF2=null;},8000);
     sincronizarLista(fase==='f1'?'fase1':'fase2');
     mostrarToast('Registro eliminado');
-  } catch(e) { mostrarToast('Error'); }
+  } catch(e){mostrarToast('Error');}
 }
 
 async function deshacerF1() {
   if(!undoStackF1) return;
-  try { await escribirBin(undoStackF1); undoStackF1=null; document.getElementById('undo-bar-f1').style.display='none'; sincronizarLista('fase1'); mostrarToast('Acción deshecha'); } catch(e) { mostrarToast('Error'); }
+  try {
+    await actualizarMeta(reunionId, undoStackF1.meta);
+    // Restaurar asistentes completos requiere nueva-reunion — más simple: recargar
+    mostrarToast('Recarga la página para ver los cambios restaurados');
+    undoStackF1=null; document.getElementById('undo-bar-f1').style.display='none';
+  } catch(e){mostrarToast('Error');}
 }
 async function deshacerF2() {
   if(!undoStackF2) return;
-  try { await escribirBin(undoStackF2); undoStackF2=null; document.getElementById('undo-bar-f2').style.display='none'; sincronizarLista('fase2'); mostrarToast('Acción deshecha'); } catch(e) { mostrarToast('Error'); }
+  try {
+    mostrarToast('Recarga la página para ver los cambios restaurados');
+    undoStackF2=null; document.getElementById('undo-bar-f2').style.display='none';
+  } catch(e){mostrarToast('Error');}
 }
 
-// ══════════════════════════════════════════
-// COORDINADORA — AÑADIR MANUAL
-// ══════════════════════════════════════════
-function abrirModalManual() { document.getElementById('modal-manual').classList.add('open'); }
-function cerrarModalManual() {
+function abrirModalManual(){ document.getElementById('modal-manual').classList.add('open'); }
+function cerrarModalManual(){
   document.getElementById('modal-manual').classList.remove('open');
   ['man-nombre','man-apellidos','man-centro','man-agrupacion'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('man-error').style.display='none';
 }
-async function guardarManual() {
-  const nombre     = document.getElementById('man-nombre').value.trim();
-  const apellidos  = document.getElementById('man-apellidos').value.trim();
-  const centro     = document.getElementById('man-centro').value.trim();
-  const agrupacion = document.getElementById('man-agrupacion').value.trim();
-  if(!nombre||!apellidos||!centro||!agrupacion){ document.getElementById('man-error').style.display='block'; return; }
+async function guardarManual(){
+  const nombre=document.getElementById('man-nombre').value.trim();
+  const apellidos=document.getElementById('man-apellidos').value.trim();
+  const centro=document.getElementById('man-centro').value.trim();
+  const agrupacion=document.getElementById('man-agrupacion').value.trim();
+  if(!nombre||!apellidos||!centro||!agrupacion){document.getElementById('man-error').style.display='block';return;}
   try {
-    const data = await leerBin();
-    undoStackF1 = JSON.parse(JSON.stringify(data));
-    data.asistentes.push({nombre,apellidos,centro,agrupacion,manual:true,firma:null,firmando:false});
-    await escribirBin(data);
-    cerrarModalManual();
-    sincronizarLista('fase1');
-    mostrarToast(`${nombre} ${apellidos} añadido ✓`);
-  } catch(e) { mostrarToast('Error al añadir'); }
+    await añadirAsistente(reunionId,{nombre,apellidos,centro,agrupacion,manual:true,firma:null,firmando:false});
+    cerrarModalManual(); sincronizarLista('fase1'); mostrarToast(`${nombre} ${apellidos} añadido ✓`);
+  } catch(e){mostrarToast('Error al añadir');}
 }
 
-// ══════════════════════════════════════════
-// COORDINADORA — ACTA
-// ══════════════════════════════════════════
-async function cargarActa() {
+async function cargarActa(){
   try {
-    const data = await leerBin();
-    const asis = data.asistentes||[];
-    const firmados = asis.filter(a=>a.firma).length;
-    const centros  = new Set(asis.map(a=>a.centro)).size;
-    document.getElementById('n-acta-total').textContent   = asis.length;
-    document.getElementById('n-acta-firmados').textContent= firmados;
-    document.getElementById('n-acta-centros').textContent = centros;
-    const c = document.getElementById('lista-acta');
-    c.innerHTML = asis.map(a=>`
+    const data=await leerDatos();
+    const asis=data.asistentes||[];
+    const firmados=asis.filter(a=>a.firma).length;
+    document.getElementById('n-acta-total').textContent=asis.length;
+    document.getElementById('n-acta-firmados').textContent=firmados;
+    document.getElementById('n-acta-centros').textContent=new Set(asis.map(a=>a.centro)).size;
+    const c=document.getElementById('lista-acta');
+    c.innerHTML=asis.map(a=>`
       <div class="att-item">
         <div class="avatar">${((a.nombre[0]||'')+(a.apellidos[0]||'')).toUpperCase()}</div>
         <div><div class="att-name">${a.nombre} ${a.apellidos}</div><div class="att-sub">${a.centro} · ${a.agrupacion}</div></div>
-        <div class="att-right">
-          ${a.firma?`<img src="${a.firma}" class="firma-thumb" alt="firma"><span class="badge badge-green">Firmado</span>`:'<span class="badge badge-gray">Sin firma</span>'}
-        </div>
-      </div>`).join('') || '<div class="empty-state">Sin asistentes.</div>';
-  } catch(e) {}
+        <div class="att-right">${a.firma?`<img src="${a.firma}" class="firma-thumb" alt="firma"><span class="badge badge-green">Firmado</span>`:'<span class="badge badge-gray">Sin firma</span>'}</div>
+      </div>`).join('')||'<div class="empty-state">Sin asistentes.</div>';
+  } catch(e){}
 }
 
-async function nuevaReunion() {
+async function nuevaReunion(){
   if(!confirm('¿Iniciar una nueva reunión? Se borrará toda la información actual.')) return;
   try {
-    await escribirBin({asistentes:[],meta:{fase:'config'}});
-    ['tab-fase1','tab-fase2','tab-acta'].forEach(id=>{ document.getElementById(id).disabled=true; });
+    const data=await nuevaReunionAPI({fase:'config'});
+    reunionId=data.id;
+    ['tab-fase1','tab-fase2','tab-acta'].forEach(id=>document.getElementById(id).disabled=true);
     ['lugar','coordinadora'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('fecha').value = hoy();
-    irFase('config');
-    mostrarToast('Lista limpiada');
-  } catch(e) { mostrarToast('Error'); }
+    document.getElementById('fecha').value=hoy();
+    irFase('config'); mostrarToast('Lista limpiada');
+  } catch(e){mostrarToast('Error');}
 }
 
-// ══════════════════════════════════════════
-// PDF
-// ══════════════════════════════════════════
-async function exportarPDF() {
-  let asis=[], meta={};
-  try { const d=await leerBin(); asis=d.asistentes||[]; meta=d.meta||{}; } catch(e){ mostrarToast('Error'); return; }
-  if(!asis.length){ alert('No hay asistentes.'); return; }
-
-  const {jsPDF}=window.jspdf;
+// ── PDF ───────────────────────────────────
+async function exportarPDF(){
+  let asis=[],meta={};
+  try{const d=await leerDatos();asis=d.asistentes||[];meta=d.meta||{};}catch(e){mostrarToast('Error');return;}
+  if(!asis.length){alert('No hay asistentes.');return;}
+  const{jsPDF}=window.jspdf;
   const doc=new jsPDF({unit:'mm',format:'a4'});
-  const W=210, mg=18;
-  let y=20;
-
-  doc.setFontSize(18); doc.setFont('helvetica','bold'); doc.setTextColor(26,86,160);
-  doc.text('ACTA DE ASISTENCIA', mg, y);
+  const W=210,mg=18;let y=20;
+  doc.setFontSize(18);doc.setFont('helvetica','bold');doc.setTextColor(26,86,160);
+  doc.text('ACTA DE ASISTENCIA',mg,y);y+=8;
+  doc.setFontSize(11);doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);
+  doc.text(meta.tipo||'Reunión de coordinación territorial de orientadores',mg,y,{maxWidth:W-mg*2});y+=10;
+  doc.setFontSize(9.5);doc.setTextColor(100,100,100);
+  doc.text(`Fecha: ${meta.fecha?formatFecha(meta.fecha):'—'}   Hora: ${meta.hora||'—'}   Lugar: ${meta.lugar||'—'}`,mg,y);
+  if(meta.coordinadora){y+=5.5;doc.text(`Coordinadora territorial: ${meta.coordinadora}`,mg,y);}
+  y+=6;doc.setDrawColor(26,86,160);doc.setLineWidth(0.6);doc.line(mg,y,W-mg,y);
+  y+=8;doc.setFontSize(10.5);doc.setFont('helvetica','bold');doc.setTextColor(30,30,30);
+  doc.text(`Relación de asistentes (${asis.length})`,mg,y);
   y+=8;
-  doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.setTextColor(30,30,30);
-  doc.text(meta.tipo||'Reunión de coordinación territorial de orientadores', mg, y, {maxWidth:W-mg*2});
-  y+=10;
-  doc.setFontSize(9.5); doc.setTextColor(100,100,100);
-  doc.text(`Fecha: ${meta.fecha?formatFecha(meta.fecha):'—'}   Hora: ${meta.hora||'—'}   Lugar: ${meta.lugar||'—'}`, mg, y);
-  if(meta.coordinadora){ y+=5.5; doc.text(`Coordinadora territorial: ${meta.coordinadora}`, mg, y); }
-  y+=6;
-  doc.setDrawColor(26,86,160); doc.setLineWidth(0.6); doc.line(mg,y,W-mg,y);
-  y+=8;
-  doc.setFontSize(10.5); doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30);
-  doc.text(`Relación de asistentes (${asis.length})`, mg, y);
-
-  y+=8;
-  const cols=[10,55,65,52];
-  const heads=['Nº','Nombre y apellidos','Centro','Agrupación'];
-  const rowH=9, headH=9;
-  doc.setFillColor(219,234,254);
-  doc.rect(mg,y,W-mg*2,headH,'F');
-  doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(26,86,160);
-  let cx=mg;
-  heads.forEach((h,i)=>{ doc.text(h,cx+cols[i]/2,y+headH/2+1.2,{align:'center'}); cx+=cols[i]; });
-  y+=headH;
-
-  doc.setFont('helvetica','normal'); doc.setTextColor(30,30,30);
+  const cols=[10,55,65,52],heads=['Nº','Nombre y apellidos','Centro','Agrupación'],rowH=9,headH=9;
+  doc.setFillColor(219,234,254);doc.rect(mg,y,W-mg*2,headH,'F');
+  doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.setTextColor(26,86,160);
+  let cx=mg;heads.forEach((h,i)=>{doc.text(h,cx+cols[i]/2,y+headH/2+1.2,{align:'center'});cx+=cols[i];});
+  y+=headH;doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);
   asis.forEach((a,idx)=>{
-    if(y+rowH>265){ doc.addPage(); y=20; }
-    if(idx%2===0){ doc.setFillColor(248,250,252); doc.rect(mg,y,W-mg*2,rowH,'F'); }
-    doc.setFontSize(8.5); cx=mg;
+    if(y+rowH>265){doc.addPage();y=20;}
+    if(idx%2===0){doc.setFillColor(248,250,252);doc.rect(mg,y,W-mg*2,rowH,'F');}
+    doc.setFontSize(8.5);cx=mg;
     [String(idx+1),`${a.nombre} ${a.apellidos}`,a.centro||'',a.agrupacion||''].forEach((v,i)=>{
       const txt=doc.splitTextToSize(v,cols[i]-3)[0];
-      if(i===0) doc.text(txt,cx+cols[i]/2,y+rowH/2+1.2,{align:'center'});
+      if(i===0)doc.text(txt,cx+cols[i]/2,y+rowH/2+1.2,{align:'center'});
       else doc.text(txt,cx+2,y+rowH/2+1.2);
       cx+=cols[i];
     });
     y+=rowH;
   });
-
-  doc.setDrawColor(200,200,200); doc.setLineWidth(0.3); doc.line(mg,y,W-mg,y);
-
+  doc.setDrawColor(200,200,200);doc.setLineWidth(0.3);doc.line(mg,y,W-mg,y);
   const conFirma=asis.filter(a=>a.firma);
   if(conFirma.length){
-    if(y+45>270){ doc.addPage(); y=20; }
-    y+=12;
-    doc.setFontSize(10.5); doc.setFont('helvetica','bold'); doc.setTextColor(26,86,160);
-    doc.text('Firmas',mg,y); y+=7;
-    const fW=54,fH=22,gap=8; let col=0;
+    if(y+45>270){doc.addPage();y=20;}
+    y+=12;doc.setFontSize(10.5);doc.setFont('helvetica','bold');doc.setTextColor(26,86,160);
+    doc.text('Firmas',mg,y);y+=7;
+    const fW=54,fH=22,gap=8;let col=0;
     conFirma.forEach(a=>{
-      if(y+fH+20>278){ doc.addPage(); y=20; col=0; }
+      if(y+fH+20>278){doc.addPage();y=20;col=0;}
       const fx=mg+col*(fW+gap);
-      doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(30,30,30);
+      doc.setFontSize(7.5);doc.setFont('helvetica','bold');doc.setTextColor(30,30,30);
       doc.text(`${a.nombre} ${a.apellidos}`,fx,y,{maxWidth:fW});
-      doc.setFont('helvetica','normal'); doc.setTextColor(100,100,100);
+      doc.setFont('helvetica','normal');doc.setTextColor(100,100,100);
       doc.text((a.centro||'').substring(0,30),fx,y+4,{maxWidth:fW});
-      try{ doc.addImage(a.firma,'PNG',fx,y+6,fW,fH); }catch(e){}
-      doc.setDrawColor(180,180,180); doc.setLineWidth(0.3); doc.rect(fx,y+6,fW,fH);
-      col++; if(col>=3){ col=0; y+=fH+20; }
+      try{doc.addImage(a.firma,'PNG',fx,y+6,fW,fH);}catch(e){}
+      doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);doc.rect(fx,y+6,fW,fH);
+      col++;if(col>=3){col=0;y+=fH+20;}
     });
   }
-
   const tp=doc.internal.getNumberOfPages();
   for(let p=1;p<=tp;p++){
-    doc.setPage(p); doc.setFontSize(7.5); doc.setTextColor(160,160,160);
+    doc.setPage(p);doc.setFontSize(7.5);doc.setTextColor(160,160,160);
     doc.line(mg,285,W-mg,285);
     doc.text(`Pág. ${p} de ${tp}`,W-mg,290,{align:'right'});
     doc.text('Documento generado automáticamente',mg,290);
@@ -1046,70 +914,51 @@ async function exportarPDF() {
 }
 
 // ══════════════════════════════════════════
-// MÓVIL — FASE 1
+// MÓVIL FASE 1
 // ══════════════════════════════════════════
-async function initMovilF1() {
-  // 1. Comprobar uso previo en este dispositivo
-  const usadoKey = 'usado_f1_' + sesionURL;
-  if(localStorage.getItem(usadoKey)) {
-    mostrarVistaF1('usado'); return;
-  }
-
+async function initMovilF1(){
+  const usadoKey='usado_f1_'+sesionURL;
+  if(localStorage.getItem(usadoKey)){mostrarVistaF1('usado');return;}
   try {
-    const data = await leerBin();
-    const meta = data.meta || {};
-
-    // 2. Validar sesión
-    if(!sesionURL || sesionURL !== meta.sesion) { mostrarVistaF1('invalido'); return; }
-
-    // 3. Validar token TOTP
-    const valido = await validarToken(sesionURL, tokenURL);
-    if(!valido) { mostrarVistaF1('invalido'); return; }
-
-    // 4. Comprobar si asistencia cerrada
-    if(meta.asistenciaCerrada) { mostrarVistaF1('cerrado'); return; }
-
-    // 5. Marcar dispositivo como usado AHORA (antes de mostrar formulario)
-    localStorage.setItem(usadoKey, '1');
-
-    // 6. Mostrar datos de reunión
-    if(meta.tipo) document.getElementById('m1-tipo').textContent = meta.tipo;
-    const partes=[meta.fecha?formatFecha(meta.fecha):'',meta.hora||'',meta.lugar||''].filter(Boolean);
-    document.getElementById('m1-meta').textContent = partes.join(' · ');
+    const data=await leerDatos();
+    const meta=data.meta||{};
+    if(!sesionURL||sesionURL!==meta.sesion){mostrarVistaF1('invalido');return;}
+    const valido=await validarToken(sesionURL,tokenURL);
+    if(!valido){mostrarVistaF1('invalido');return;}
+    if(meta.asistenciaCerrada){mostrarVistaF1('cerrado');return;}
+    localStorage.setItem(usadoKey,'1');
+    if(meta.tipo)document.getElementById('m1-tipo').textContent=meta.tipo;
+    document.getElementById('m1-meta').textContent=[meta.fecha?formatFecha(meta.fecha):'',meta.hora||'',meta.lugar||''].filter(Boolean).join(' · ');
     mostrarVistaF1('form');
-  } catch(e) { mostrarVistaF1('invalido'); }
+  } catch(e){mostrarVistaF1('invalido');}
 }
 
-function mostrarVistaF1(vista) {
-  ['form','ok','cerrado','invalido','usado'].forEach(v=>{
-    document.getElementById(`f1-${v}-view`).style.display = v===vista?'block':'none';
+function mostrarVistaF1(v){
+  ['form','ok','cerrado','invalido','usado'].forEach(n=>{
+    document.getElementById(`f1-${n}-view`).style.display=n===v?'block':'none';
   });
 }
 
-async function registrarPresencia() {
-  const nombre     = document.getElementById('f1-nombre').value.trim();
-  const apellidos  = document.getElementById('f1-apellidos').value.trim();
-  const centro     = document.getElementById('f1-centro').value.trim();
-  const agrupacion = document.getElementById('f1-agrupacion').value.trim();
-  const err = document.getElementById('f1-error');
-  if(!nombre||!apellidos||!centro||!agrupacion){ err.style.display='block'; return; }
+async function registrarPresencia(){
+  const nombre=document.getElementById('f1-nombre').value.trim();
+  const apellidos=document.getElementById('f1-apellidos').value.trim();
+  const centro=document.getElementById('f1-centro').value.trim();
+  const agrupacion=document.getElementById('f1-agrupacion').value.trim();
+  const consent=document.getElementById('f1-consent').checked;
+  const err=document.getElementById('f1-error');
+  if(!nombre||!apellidos||!centro||!agrupacion||!consent){err.style.display='block';return;}
   err.style.display='none';
-
   const btn=document.getElementById('btn-asistencia');
-  btn.disabled=true;
-  btn.innerHTML='<span class="spinner"></span> Guardando...';
-
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Guardando...';
   try {
-    const data = await leerBin();
-    // Re-validar que no esté cerrada
-    if(data.meta?.asistenciaCerrada){ mostrarVistaF1('cerrado'); return; }
-    data.asistentes.push({nombre,apellidos,centro,agrupacion,manual:false,firma:null,firmando:false});
-    await escribirBin(data);
-    document.getElementById('f1-ok-nombre').textContent = `${nombre} ${apellidos}`;
-    document.getElementById('f1-ok-centro').textContent  = centro;
-    document.getElementById('f1-ok-agrup').textContent   = agrupacion;
+    const data=await leerDatos();
+    if(data.meta?.asistenciaCerrada){mostrarVistaF1('cerrado');return;}
+    await añadirAsistente(data.id,{nombre,apellidos,centro,agrupacion,manual:false,firma:null,firmando:false});
+    document.getElementById('f1-ok-nombre').textContent=`${nombre} ${apellidos}`;
+    document.getElementById('f1-ok-centro').textContent=centro;
+    document.getElementById('f1-ok-agrup').textContent=agrupacion;
     mostrarVistaF1('ok');
-  } catch(e) {
+  } catch(e){
     btn.disabled=false;
     btn.innerHTML='<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Asistencia';
     alert('Error al guardar. Comprueba tu conexión.');
@@ -1117,101 +966,83 @@ async function registrarPresencia() {
 }
 
 // ══════════════════════════════════════════
-// MÓVIL — FASE 2
+// MÓVIL FASE 2
 // ══════════════════════════════════════════
-let asistentesF2 = [];
-let seleccionado = null;
+let asistentesF2=[];
+let seleccionado=null;
 
-async function initMovilF2() {
+async function initMovilF2(){
   try {
-    const data = await leerBin();
-    const meta = data.meta || {};
-
-    // Validar sesión F2
-    if(!sesionURL || sesionURL !== meta.sesionF2) { mostrarVistaF2('invalido'); return; }
-
-    if(meta.tipo) document.getElementById('m2-tipo').textContent = meta.tipo;
-    const partes=[meta.fecha?formatFecha(meta.fecha):'',meta.hora||'',meta.lugar||''].filter(Boolean);
-    document.getElementById('m2-meta').textContent = partes.join(' · ');
-
-    asistentesF2 = data.asistentes || [];
+    const data=await leerDatos();
+    const meta=data.meta||{};
+    if(!sesionURL||sesionURL!==meta.sesionF2){mostrarVistaF2('invalido');return;}
+    if(meta.tipo)document.getElementById('m2-tipo').textContent=meta.tipo;
+    document.getElementById('m2-meta').textContent=[meta.fecha?formatFecha(meta.fecha):'',meta.hora||'',meta.lugar||''].filter(Boolean).join(' · ');
+    asistentesF2=data.asistentes||[];
     initFirmaCanvas();
-  } catch(e) { mostrarVistaF2('invalido'); }
+  } catch(e){mostrarVistaF2('invalido');}
 }
 
-function mostrarVistaF2(vista) {
-  ['form','ok','invalido'].forEach(v=>{
-    document.getElementById(`f2-${v}-view`).style.display = v===vista?'block':'none';
+function mostrarVistaF2(v){
+  ['form','ok','invalido'].forEach(n=>{
+    document.getElementById(`f2-${n}-view`).style.display=n===v?'block':'none';
   });
 }
 
-function buscarNombre(val) {
-  const lista = document.getElementById('f2-lista');
-  if(val.length < 2){ lista.style.display='none'; return; }
-  const q = val.toLowerCase();
-  // Solo mostrar los que no han firmado y no están siendo firmados
-  const filtrados = asistentesF2.filter((a,i)=>
-    !a.firma && !a.firmando &&
-    (`${a.nombre} ${a.apellidos}`.toLowerCase().includes(q))
-  );
+function buscarNombre(val){
+  const lista=document.getElementById('f2-lista');
+  if(val.length<2){lista.style.display='none';return;}
+  const q=val.toLowerCase();
+  const filtrados=asistentesF2.filter((a)=>!a.firma&&!a.firmando&&`${a.nombre} ${a.apellidos}`.toLowerCase().includes(q));
   if(!filtrados.length){
     lista.innerHTML='<div class="autocomplete-empty">Sin resultados</div>';
-    lista.style.display='block'; return;
+    lista.style.display='block';return;
   }
-  lista.innerHTML = filtrados.map((a,i)=>{
-    const idx = asistentesF2.indexOf(a);
-    return `<div class="autocomplete-item" onclick="seleccionarNombre(${idx})">${a.nombre} ${a.apellidos} <span style="font-size:11px;color:var(--gray-400)">· ${a.centro}</span></div>`;
+  lista.innerHTML=filtrados.map(a=>{
+    const idx=asistentesF2.indexOf(a);
+    return`<div class="autocomplete-item" onclick="seleccionarNombre(${idx})">${a.nombre} ${a.apellidos} <span style="font-size:11px;color:var(--gray-400)">· ${a.centro}</span></div>`;
   }).join('');
   lista.style.display='block';
 }
 
-async function seleccionarNombre(idx) {
-  const a = asistentesF2[idx];
+async function seleccionarNombre(idx){
+  const a=asistentesF2[idx];
   document.getElementById('f2-lista').style.display='none';
-  document.getElementById('f2-busca').value = `${a.nombre} ${a.apellidos}`;
-
-  // Marcar como "en proceso" en JSONBin para que nadie más lo seleccione
+  document.getElementById('f2-busca').value=`${a.nombre} ${a.apellidos}`;
   try {
-    const data = await leerBin();
-    // Re-verificar que no lo haya cogido otro
-    if(data.asistentes[idx]?.firmando || data.asistentes[idx]?.firma) {
-      document.getElementById('f2-error').textContent = 'Esta persona ya está firmando desde otro dispositivo.';
-      document.getElementById('f2-error').style.display='block';
-      return;
+    const data=await leerDatos();
+    if(data.asistentes[idx]?.firmando||data.asistentes[idx]?.firma){
+      document.getElementById('f2-error').textContent='Esta persona ya está firmando desde otro dispositivo.';
+      document.getElementById('f2-error').style.display='block';return;
     }
-    data.asistentes[idx].firmando = true;
-    await escribirBin(data);
-    asistentesF2 = data.asistentes;
-    seleccionado = idx;
-
-    document.getElementById('f2-sel-nombre').textContent = `${a.nombre} ${a.apellidos}`;
-    document.getElementById('f2-sel-centro').textContent = `${a.centro} · ${a.agrupacion}`;
+    await actualizarAsist(data.id,idx,{firmando:true});
+    asistentesF2=data.asistentes;
+    seleccionado=idx;
+    document.getElementById('f2-sel-nombre').textContent=`${a.nombre} ${a.apellidos}`;
+    document.getElementById('f2-sel-centro').textContent=`${a.centro} · ${a.agrupacion}`;
     document.getElementById('f2-seleccionado').style.display='block';
     document.getElementById('f2-error').style.display='none';
     initFirmaCanvas();
-  } catch(e) {
+  } catch(e){
     document.getElementById('f2-error').textContent='Error de conexión. Inténtalo de nuevo.';
     document.getElementById('f2-error').style.display='block';
   }
 }
 
-async function registrarFirma() {
-  if(seleccionado === null){ return; }
-  const canvas = document.getElementById('firmaCanvas');
-  const firma = firmaVacia() ? null : canvas.toDataURL('image/png');
+async function registrarFirma(){
+  if(seleccionado===null)return;
+  const canvas=document.getElementById('firmaCanvas');
+  const firma=firmaVacia()?null:canvas.toDataURL('image/png');
   const btn=document.getElementById('btn-firmar');
-  btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Guardando...';
-
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Guardando...';
   try {
-    const data = await leerBin();
-    data.asistentes[seleccionado].firma    = firma;
-    data.asistentes[seleccionado].firmando = false;
-    await escribirBin(data);
-    const a = asistentesF2[seleccionado];
-    document.getElementById('f2-ok-nombre').textContent = `${a.nombre} ${a.apellidos}`;
-    document.getElementById('f2-ok-centro').textContent = a.centro;
+    const data=await leerDatos();
+    await actualizarAsist(data.id,seleccionado,{firma,firmando:false});
+    const a=asistentesF2[seleccionado];
+    document.getElementById('f2-ok-nombre').textContent=`${a.nombre} ${a.apellidos}`;
+    document.getElementById('f2-ok-centro').textContent=a.centro;
     mostrarVistaF2('ok');
-  } catch(e) {
+  } catch(e){
     btn.disabled=false;
     btn.innerHTML='<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Firmar';
     document.getElementById('f2-error').textContent='Error al guardar. Inténtalo de nuevo.';
@@ -1222,28 +1053,28 @@ async function registrarFirma() {
 // ══════════════════════════════════════════
 // CANVAS FIRMA
 // ══════════════════════════════════════════
-function initFirmaCanvas() {
-  const canvas = document.getElementById('firmaCanvas');
-  if(!canvas) return;
+function initFirmaCanvas(){
+  const canvas=document.getElementById('firmaCanvas');
+  if(!canvas)return;
   const dpr=window.devicePixelRatio||1;
   const w=canvas.parentElement.clientWidth||320;
-  canvas.width=w*dpr; canvas.height=150*dpr;
-  canvas.style.width=w+'px'; canvas.style.height='150px';
+  canvas.width=w*dpr;canvas.height=150*dpr;
+  canvas.style.width=w+'px';canvas.style.height='150px';
   const ctx=canvas.getContext('2d');
   ctx.scale(dpr,dpr);
-  ctx.strokeStyle='#1a56a0'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.strokeStyle='#1a56a0';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';
   let drawing=false;
-  function pt(e){ const r=canvas.getBoundingClientRect(),s=e.touches?e.touches[0]:e; return{x:s.clientX-r.left,y:s.clientY-r.top}; }
-  canvas.addEventListener('mousedown',  e=>{drawing=true;const p=pt(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
-  canvas.addEventListener('mousemove',  e=>{if(!drawing)return;const p=pt(e);ctx.lineTo(p.x,p.y);ctx.stroke();});
-  canvas.addEventListener('mouseup',    ()=>drawing=false);
-  canvas.addEventListener('mouseleave', ()=>drawing=false);
-  canvas.addEventListener('touchstart', e=>{e.preventDefault();drawing=true;const p=pt(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
-  canvas.addEventListener('touchmove',  e=>{e.preventDefault();if(!drawing)return;const p=pt(e);ctx.lineTo(p.x,p.y);ctx.stroke();},{passive:false});
-  canvas.addEventListener('touchend',   e=>{e.preventDefault();drawing=false;},{passive:false});
+  function pt(e){const r=canvas.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{x:s.clientX-r.left,y:s.clientY-r.top};}
+  canvas.addEventListener('mousedown', e=>{drawing=true;const p=pt(e);ctx.beginPath();ctx.moveTo(p.x,p.y);});
+  canvas.addEventListener('mousemove', e=>{if(!drawing)return;const p=pt(e);ctx.lineTo(p.x,p.y);ctx.stroke();});
+  canvas.addEventListener('mouseup',   ()=>drawing=false);
+  canvas.addEventListener('mouseleave',()=>drawing=false);
+  canvas.addEventListener('touchstart',e=>{e.preventDefault();drawing=true;const p=pt(e);ctx.beginPath();ctx.moveTo(p.x,p.y);},{passive:false});
+  canvas.addEventListener('touchmove', e=>{e.preventDefault();if(!drawing)return;const p=pt(e);ctx.lineTo(p.x,p.y);ctx.stroke();},{passive:false});
+  canvas.addEventListener('touchend',  e=>{e.preventDefault();drawing=false;},{passive:false});
 }
-function limpiarFirma(){ const c=document.getElementById('firmaCanvas'); c.getContext('2d').clearRect(0,0,c.width,c.height); }
-function firmaVacia(){ const c=document.getElementById('firmaCanvas'); return !c.getContext('2d').getImageData(0,0,c.width,c.height).data.some(v=>v!==0); }
+function limpiarFirma(){const c=document.getElementById('firmaCanvas');c.getContext('2d').clearRect(0,0,c.width,c.height);}
+function firmaVacia(){const c=document.getElementById('firmaCanvas');return!c.getContext('2d').getImageData(0,0,c.width,c.height).data.some(v=>v!==0);}
 </script>
 </body>
 </html>
