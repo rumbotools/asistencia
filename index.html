@@ -6,6 +6,7 @@
 <title>Asistencia — Orientadores</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -153,8 +154,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
         <svg width="22" height="22" fill="none" stroke="#1a56a0" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       </div>
       <div class="login-title">Panel de coordinador/a</div>
-      <div class="login-sub">Introduce la contraseña para acceder</div>
-      <div class="field"><input id="login-pass" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')comprobarPass()"></div>
+      <div class="login-sub">Accede con tu cuenta de coordinador/a</div>
+      <div class="field"><input id="login-email" type="email" placeholder="Email" autocomplete="email"></div>
+      <div class="field"><input id="login-pass" type="password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')comprobarPass()" autocomplete="current-password"></div>
       <button class="btn btn-primary btn-block" onclick="comprobarPass()">Entrar</button>
       <div class="login-error" id="login-error">Contraseña incorrecta</div>
     </div>
@@ -483,19 +485,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
 const EDGE_URL  = 'https://ltauwdffqsttfjkwqvbo.supabase.co/functions/v1/orientadores-api';
 const PUB_KEY   = 'sb_publishable_QgZUvBcB8qWGTmVQsEleCw_IOL-DPp-';
 const PUBLIC    = 'https://asistencia.rumbotools.com/';
-const PASS_HASH = 'beea4d664c172a33ba0b83048d354145be35a4ec4ce59a4ba0e71bcc3cf86dd1'; 
 const TOTP_STEP = 15;
+let supabaseClient = null;
+let jwtToken = null;
 const QR_ROTATE = 5;
 
 // ══════════════════════════════════════════
 // API — todas las llamadas van a la Edge Function
 // ══════════════════════════════════════════
 async function api(action, method = 'GET', body = null) {
+  // Usar JWT del coordinador si está disponible, si no usar publishable key
+  const token = jwtToken || PUB_KEY;
   const opts = {
     method,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${PUB_KEY}`,
+      'Authorization': `Bearer ${token}`,
       'x-action': action,
     },
   };
@@ -506,8 +511,9 @@ async function api(action, method = 'GET', body = null) {
 }
 
 const leerDatos         = ()              => api('leer', 'GET');
+const leerDatosPublico  = ()              => api('leer-publico', 'GET');
 const actualizarMeta    = (id, meta)      => api('meta', 'PUT', { id, meta });
-const añadirAsistente   = (id, asistente) => api('anadir', 'POST', { id, asistente });
+const añadirAsistente   = (id, asistente, sesion_id, totp_token) => api('anadir', 'POST', { id, asistente, sesion_id, totp_token });
 const actualizarAsist   = (id, idx, cambios) => api('actualizar-asistente', 'PUT', { id, idx, cambios });
 const eliminarAsist     = (id, idx)       => api('eliminar-asistente', 'PUT', { id, idx });
 const nuevaReunionAPI   = (meta)          => api('nueva-reunion', 'POST', { meta });
@@ -522,13 +528,20 @@ const tokenURL  = params.get('t');
 
 document.getElementById('fecha').value = new Date().toISOString().slice(0,10);
 
+// Inicializar Supabase Auth client
+supabaseClient = window.supabase.createClient(
+  'https://ltauwdffqsttfjkwqvbo.supabase.co',
+  'sb_publishable_QgZUvBcB8qWGTmVQsEleCw_IOL-DPp-'
+);
+
 if (modo === 'f1') {
   activarScreen('screen-f1'); initMovilF1();
 } else if (modo === 'f2') {
   activarScreen('screen-f2'); initMovilF2();
 } else {
   if (sessionStorage.getItem('coord_auth') === hoy()) {
-    activarScreen('screen-coord'); arrancarCoord();
+    jwtToken = sessionStorage.getItem('coord_jwt');
+    if (jwtToken) { activarScreen('screen-coord'); arrancarCoord(); }
   }
 }
 
@@ -564,24 +577,35 @@ async function validarToken(sesionId, token) {
 // ══════════════════════════════════════════
 // LOGIN
 // ══════════════════════════════════════════
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
 async function comprobarPass() {
-  const val = document.getElementById('login-pass').value;
-  if (await sha256(val) === PASS_HASH) {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errDiv = document.getElementById('login-error');
+  errDiv.style.display = 'none';
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+    if (error || !data.session) {
+      errDiv.textContent = 'Email o contraseña incorrectos';
+      errDiv.style.display = 'block';
+      document.getElementById('login-pass').value = '';
+      return;
+    }
+    jwtToken = data.session.access_token;
     sessionStorage.setItem('coord_auth', hoy());
+    sessionStorage.setItem('coord_jwt', jwtToken);
     activarScreen('screen-coord'); arrancarCoord();
-  } else {
-    document.getElementById('login-error').style.display='block';
-    document.getElementById('login-pass').value='';
+  } catch(e) {
+    errDiv.textContent = 'Error de conexión';
+    errDiv.style.display = 'block';
   }
 }
-function cerrarSesion() {
+async function cerrarSesion() {
+  await supabaseClient.auth.signOut();
+  jwtToken = null;
   sessionStorage.removeItem('coord_auth');
+  sessionStorage.removeItem('coord_jwt');
   activarScreen('screen-login');
-  document.getElementById('login-pass').value='';
+  document.getElementById('login-pass').value = '';
 }
 
 // ══════════════════════════════════════════
@@ -983,7 +1007,7 @@ async function registrarPresencia(){
   try {
     const data=await leerDatos();
     if(data.meta?.asistenciaCerrada){mostrarVistaF1('cerrado');return;}
-    await añadirAsistente(data.id,{nombre,apellidos,centro,agrupacion,manual:false,firma:null,firmando:false});
+    await añadirAsistente(data.id,{nombre,apellidos,centro,agrupacion,manual:false,firma:null,firmando:false}, sesionURL, tokenURL);
     document.getElementById('f1-ok-nombre').textContent=`${nombre} ${apellidos}`;
     document.getElementById('f1-ok-centro').textContent=centro;
     document.getElementById('f1-ok-agrup').textContent=agrupacion;
@@ -991,7 +1015,14 @@ async function registrarPresencia(){
   } catch(e){
     btn.disabled=false;
     btn.innerHTML='<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Asistencia';
-    alert('Error al guardar. Comprueba tu conexión.');
+    if(e.message?.includes('409')) {
+      document.getElementById('f1-error').textContent = 'Ya estás registrado en esta reunión.';
+    } else {
+      document.getElementById('f1-error').textContent = 'Error al guardar. Comprueba tu conexión.';
+    }
+    document.getElementById('f1-error').style.display='block';
+    // Liberar marca de localStorage si falla
+    localStorage.removeItem('usado_f1_'+sesionURL);
   }
 }
 
@@ -1003,7 +1034,7 @@ let seleccionado=null;
 
 async function initMovilF2(){
   try {
-    const data=await leerDatos();
+    const data=await leerDatosPublico();
     const meta=data.meta||{};
     if(!sesionURL||sesionURL!==meta.sesionF2){mostrarVistaF2('invalido');return;}
     if(meta.tipo)document.getElementById('m2-tipo').textContent=meta.tipo;
@@ -1040,8 +1071,8 @@ async function seleccionarNombre(idx){
   document.getElementById('f2-lista').style.display='none';
   document.getElementById('f2-busca').value=`${a.nombre} ${a.apellidos}`;
   try {
-    const data=await leerDatos();
-    if(data.asistentes[idx]?.firmando||data.asistentes[idx]?.firma){
+    const data=await leerDatosPublico();
+    if(data.asistentes[idx]?.tieneFirma||data.asistentes[idx]?.firmando){
       document.getElementById('f2-error').textContent='Esta persona ya está firmando desde otro dispositivo.';
       document.getElementById('f2-error').style.display='block';return;
     }
