@@ -301,6 +301,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray
               <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
               Generar acta PDF
             </button>
+            <div class="divider"></div>
+            <div class="field">
+              <label>Enviar acta por email <span style="font-size:12px;color:var(--gray-400)">(@edu.gva.es)</span></label>
+              <input id="email-destino" type="email" placeholder="nombre@edu.gva.es" autocomplete="email">
+            </div>
+            <p id="email-error" style="color:#dc2626;font-size:13px;margin-bottom:.75rem;display:none"></p>
+            <button class="btn btn-block" id="btn-enviar-email" onclick="enviarActaEmail()" style="border-color:var(--blue);color:var(--blue)">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+              Enviar acta por email
+            </button>
             <div style="margin-top:.75rem">
               <button class="btn btn-ghost-red btn-block" onclick="nuevaReunion()">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
@@ -904,6 +914,119 @@ async function nuevaReunion(){
 }
 
 // ── PDF ───────────────────────────────────
+async function enviarActaEmail(){
+  const emailInput = document.getElementById('email-destino');
+  const email = emailInput ? emailInput.value.trim() : '';
+  const errDiv = document.getElementById('email-error');
+  errDiv.style.display = 'none';
+
+  if(!email){
+    errDiv.textContent = 'Introduce una dirección de email.';
+    errDiv.style.display = 'block'; return;
+  }
+  if(!email.toLowerCase().endsWith('@edu.gva.es')){
+    errDiv.textContent = 'Solo se permiten direcciones @edu.gva.es';
+    errDiv.style.display = 'block'; return;
+  }
+
+  const btn = document.getElementById('btn-enviar-email');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Enviando...';
+
+  try {
+    // Generar PDF en base64
+    const pdfBase64 = await generarPDFBase64();
+    if(!pdfBase64){ throw new Error('Error generando el PDF'); }
+
+    const data = await leerDatos();
+    const r = await api('enviar-acta', 'POST', {
+      id: data.id,
+      pdf_base64: pdfBase64,
+      email_destino: email
+    });
+
+    if(r.error){ throw new Error(r.error); }
+
+    mostrarToast(`Acta enviada a ${email} ✓`);
+    btn.innerHTML = '✓ Enviado';
+    setTimeout(()=>{
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>Enviar acta por email';
+    }, 3000);
+  } catch(e){
+    errDiv.textContent = e.message || 'Error al enviar. Inténtalo de nuevo.';
+    errDiv.style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>Enviar acta por email';
+  }
+}
+
+async function generarPDFBase64(){
+  let asis=[], meta={};
+  try{ const d=await leerDatos(); asis=d.asistentes||[]; meta=d.meta||{}; }catch(e){ return null; }
+  if(!asis.length) return null;
+
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({unit:'mm',format:'a4'});
+  const W=210,mg=18;let y=20;
+  doc.setFontSize(18);doc.setFont('helvetica','bold');doc.setTextColor(26,86,160);
+  doc.text('ACTA DE ASISTENCIA',mg,y);y+=8;
+  doc.setFontSize(11);doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);
+  doc.text(meta.tipo||'Reunión de coordinación territorial de orientadores',mg,y,{maxWidth:W-mg*2});y+=10;
+  doc.setFontSize(9.5);doc.setTextColor(100,100,100);
+  doc.text(`Fecha: ${meta.fecha?formatFecha(meta.fecha):'—'}   Hora: ${meta.hora||'—'}   Lugar: ${meta.lugar||'—'}`,mg,y);
+  if(meta.coordinadora){y+=5.5;doc.text(`Coordinador/a territorial: ${meta.coordinadora}`,mg,y);}
+  y+=6;doc.setDrawColor(26,86,160);doc.setLineWidth(0.6);doc.line(mg,y,W-mg,y);
+  y+=8;doc.setFontSize(10.5);doc.setFont('helvetica','bold');doc.setTextColor(30,30,30);
+  doc.text(`Relación de asistentes (${asis.length})`,mg,y);
+  y+=8;
+  const cols=[10,55,65,52],heads=['Nº','Nombre y apellidos','Centro','Agrupación'],rowH=9,headH=9;
+  doc.setFillColor(219,234,254);doc.rect(mg,y,W-mg*2,headH,'F');
+  doc.setFontSize(8.5);doc.setFont('helvetica','bold');doc.setTextColor(26,86,160);
+  let cx=mg;heads.forEach((h,i)=>{doc.text(h,cx+cols[i]/2,y+headH/2+1.2,{align:'center'});cx+=cols[i];});
+  y+=headH;doc.setFont('helvetica','normal');doc.setTextColor(30,30,30);
+  asis.forEach((a,idx)=>{
+    if(y+rowH>265){doc.addPage();y=20;}
+    if(idx%2===0){doc.setFillColor(248,250,252);doc.rect(mg,y,W-mg*2,rowH,'F');}
+    doc.setFontSize(8.5);cx=mg;
+    [String(idx+1),`${a.nombre} ${a.apellidos}`,a.centro||'',a.agrupacion||''].forEach((v,i)=>{
+      const txt=doc.splitTextToSize(v,cols[i]-3)[0];
+      if(i===0)doc.text(txt,cx+cols[i]/2,y+rowH/2+1.2,{align:'center'});
+      else doc.text(txt,cx+2,y+rowH/2+1.2);
+      cx+=cols[i];
+    });
+    y+=rowH;
+  });
+  doc.setDrawColor(200,200,200);doc.setLineWidth(0.3);doc.line(mg,y,W-mg,y);
+  const conFirma=asis.filter(a=>a.firma);
+  if(conFirma.length){
+    if(y+45>270){doc.addPage();y=20;}
+    y+=12;doc.setFontSize(10.5);doc.setFont('helvetica','bold');doc.setTextColor(26,86,160);
+    doc.text('Firmas',mg,y);y+=7;
+    const fW=54,fH=22,gap=8;let col=0;
+    conFirma.forEach(a=>{
+      if(y+fH+20>278){doc.addPage();y=20;col=0;}
+      const fx=mg+col*(fW+gap);
+      doc.setFontSize(7.5);doc.setFont('helvetica','bold');doc.setTextColor(30,30,30);
+      doc.text(`${a.nombre} ${a.apellidos}`,fx,y,{maxWidth:fW});
+      doc.setFont('helvetica','normal');doc.setTextColor(100,100,100);
+      doc.text((a.centro||'').substring(0,30),fx,y+4,{maxWidth:fW});
+      try{doc.addImage(a.firma,'PNG',fx,y+6,fW,fH);}catch(e){}
+      doc.setDrawColor(180,180,180);doc.setLineWidth(0.3);doc.rect(fx,y+6,fW,fH);
+      col++;if(col>=3){col=0;y+=fH+20;}
+    });
+  }
+  const tp=doc.internal.getNumberOfPages();
+  for(let p=1;p<=tp;p++){
+    doc.setPage(p);doc.setFontSize(7.5);doc.setTextColor(160,160,160);
+    doc.line(mg,285,W-mg,285);
+    doc.text(`Pág. ${p} de ${tp}`,W-mg,290,{align:'right'});
+    doc.text('Documento generado automáticamente',mg,290);
+  }
+  // Devolver base64 sin el prefijo data:application/pdf;base64,
+  return doc.output('datauristring').split(',')[1];
+}
+
 async function exportarPDF(){
   let asis=[],meta={};
   try{const d=await leerDatos();asis=d.asistentes||[];meta=d.meta||{};}catch(e){mostrarToast('Error');return;}
